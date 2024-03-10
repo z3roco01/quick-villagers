@@ -7,7 +7,6 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -18,8 +17,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import z3roco01.quickvillagers.QuickVillagers;
-
-import java.util.List;
 
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin {
@@ -50,7 +47,7 @@ public abstract class VillagerEntityMixin {
                             + " " +
                             Text.translatable("entity.minecraft.villager." + profession.substring(profession.indexOf(":")+1)).getString());
             NbtList lore = new NbtList();
-            lore.addElement(0, NbtString.of(Text.Serializer.toJson(loreText.getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)).get(0))));
+            lore.addElement(0, NbtString.of(Text.Serialization.toJsonString(loreText.getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)).get(0))));
             egg.getOrCreateSubNbt("display").put("Lore", lore);
             player.getInventory().offerOrDrop(egg);
 
