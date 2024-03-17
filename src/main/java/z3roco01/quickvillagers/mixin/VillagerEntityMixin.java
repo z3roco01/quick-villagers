@@ -8,14 +8,16 @@ import net.minecraft.nbt.*;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import z3roco01.quickvillagers.QuickVillagers;
+
+import java.util.Objects;
 
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin {
@@ -45,7 +47,10 @@ public abstract class VillagerEntityMixin {
             Text loreText = Text.of(Text.translatable("biome.minecraft." + type.substring(type.indexOf(":")+1)).getString()
                             + " " +
                             Text.translatable("entity.minecraft.villager." + profession.substring(profession.indexOf(":")+1)).getString());
-            egg.setCustomName(loreText.getWithStyle(Style.EMPTY.withItalic(false)).get(0));
+            NbtList lore = new NbtList();
+            lore.addElement(0, NbtString.of(Text.Serialization.toJsonString(loreText.getWithStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false)).get(0))));
+            egg.getOrCreateSubNbt("display").put("Lore", lore);
+            Objects.requireNonNull(egg.getNbt()).putBoolean("notSpawnBaby", true);
             player.getInventory().offerOrDrop(egg);
 
             ((VillagerEntity)(Object)this).discard();
