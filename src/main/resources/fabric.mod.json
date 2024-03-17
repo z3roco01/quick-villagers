@@ -15,8 +15,7 @@
 	"entrypoints": {
 		"main": [
 			{
-				"value": "z3roco01.quickvillagers.QuickVillagers",
-				"adapter": "kotlin"
+				"value": "z3roco01.quickvillagers.QuickVillagers"
 			}
 		]
 	},

@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import z3roco01.quickvillagers.QuickVillagers;
 
 import java.util.Objects;
 
@@ -26,8 +25,6 @@ public abstract class VillagerEntityMixin {
     @Inject(method="interactMob", at=@At("HEAD"), cancellable = true)
     private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> ci) {
         if(player.isSneaking()) {
-            QuickVillagers.INSTANCE.getLogger().info("villager pickup :3");
-
             NbtCompound eggData = new NbtCompound();
 
             NbtCompound entityTag = new NbtCompound();
@@ -35,8 +32,6 @@ public abstract class VillagerEntityMixin {
             entityTag.putString("id", "minecraft:villager");
 
             eggData.put("EntityTag", entityTag);
-
-            QuickVillagers.INSTANCE.getLogger().info(eggData.toString());
 
             ItemStack egg = new ItemStack(Items.VILLAGER_SPAWN_EGG, 1);
             egg.setNbt(eggData);
