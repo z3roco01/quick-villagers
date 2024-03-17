@@ -7,19 +7,16 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import z3roco01.quickvillagers.QuickVillagers;
 
-import java.util.List;
+import java.util.Objects;
 
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin {
@@ -28,8 +25,6 @@ public abstract class VillagerEntityMixin {
     @Inject(method="interactMob", at=@At("HEAD"), cancellable = true)
     private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> ci) {
         if(player.isSneaking()) {
-            QuickVillagers.INSTANCE.getLogger().info("villager pickup :3");
-
             NbtCompound eggData = new NbtCompound();
 
             NbtCompound entityTag = new NbtCompound();
@@ -37,8 +32,6 @@ public abstract class VillagerEntityMixin {
             entityTag.putString("id", "minecraft:villager");
 
             eggData.put("EntityTag", entityTag);
-
-            QuickVillagers.INSTANCE.getLogger().info(eggData.toString());
 
             ItemStack egg = new ItemStack(Items.VILLAGER_SPAWN_EGG, 1);
             egg.setNbt(eggData);
@@ -50,8 +43,9 @@ public abstract class VillagerEntityMixin {
                             + " " +
                             Text.translatable("entity.minecraft.villager." + profession.substring(profession.indexOf(":")+1)).getString());
             NbtList lore = new NbtList();
-            lore.addElement(0, NbtString.of(Text.Serializer.toJson(loreText.getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)).get(0))));
+            lore.addElement(0, NbtString.of(Text.Serializer.toJson(loreText.getWithStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false)).get(0))));
             egg.getOrCreateSubNbt("display").put("Lore", lore);
+            Objects.requireNonNull(egg.getNbt()).putBoolean("notSpawnBaby", true);
             player.getInventory().offerOrDrop(egg);
 
             ((VillagerEntity)(Object)this).discard();
@@ -59,9 +53,5 @@ public abstract class VillagerEntityMixin {
             ci.setReturnValue(ActionResult.SUCCESS);
             ci.cancel();
         }
-    }
-
-    @Unique
-    private void addName(ItemStack stack, String name) {
     }
 }
