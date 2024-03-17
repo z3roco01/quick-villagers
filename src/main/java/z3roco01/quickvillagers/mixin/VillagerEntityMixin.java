@@ -46,9 +46,7 @@ public abstract class VillagerEntityMixin {
             Text loreText = Text.of(Text.translatable("biome.minecraft." + type.substring(type.indexOf(":")+1)).getString()
                             + " " +
                             Text.translatable("entity.minecraft.villager." + profession.substring(profession.indexOf(":")+1)).getString());
-            NbtList lore = new NbtList();
-            lore.addElement(0, NbtString.of(Text.Serialization.toJsonString(loreText.getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)).get(0))));
-            egg.getOrCreateSubNbt("display").put("Lore", lore);
+            egg.setCustomName(loreText.getWithStyle(Style.EMPTY.withItalic(false)).get(0));
             player.getInventory().offerOrDrop(egg);
 
             ((VillagerEntity)(Object)this).discard();
