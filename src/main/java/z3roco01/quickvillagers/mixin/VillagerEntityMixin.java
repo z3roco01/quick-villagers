@@ -1,5 +1,8 @@
 package z3roco01.quickvillagers.mixin;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -15,8 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.Objects;
+import z3roco01.quickvillagers.QuickVillagerComponents;
 
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin {
@@ -34,7 +36,7 @@ public abstract class VillagerEntityMixin {
             eggData.put("EntityTag", entityTag);
 
             ItemStack egg = new ItemStack(Items.VILLAGER_SPAWN_EGG, 1);
-            egg.setNbt(eggData);
+            egg.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityTag));
 
             String profession = entityTag.getCompound("VillagerData").getString("profession");
             String type = entityTag.getCompound("VillagerData").getString("type");
@@ -42,10 +44,8 @@ public abstract class VillagerEntityMixin {
             Text loreText = Text.of(Text.translatable("biome.minecraft." + type.substring(type.indexOf(":")+1)).getString()
                             + " " +
                             Text.translatable("entity.minecraft.villager." + profession.substring(profession.indexOf(":")+1)).getString());
-            NbtList lore = new NbtList();
-            lore.addElement(0, NbtString.of(Text.Serialization.toJsonString(loreText.getWithStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false)).get(0))));
-            egg.getOrCreateSubNbt("display").put("Lore", lore);
-            Objects.requireNonNull(egg.getNbt()).putBoolean("notSpawnBaby", true);
+            egg.set(DataComponentTypes.LORE, new LoreComponent(loreText.getWithStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false))));
+            egg.set(QuickVillagerComponents.SPAWN_BABY, ((VillagerEntity)(Object)this).isBaby());
             player.getInventory().offerOrDrop(egg);
 
             ((VillagerEntity)(Object)this).discard();

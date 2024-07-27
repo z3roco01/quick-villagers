@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'fabric-loom' version '1.6-SNAPSHOT'
 	id 'maven-publish'
   id "org.jetbrains.kotlin.jvm" version "1.9.23"
 }
 
-version = project.mod_version + '+' + project.minecraft_version
+version = 'v' + project.mod_version + '+mc' + project.minecraft_version
 group = project.maven_group
 
 base {
