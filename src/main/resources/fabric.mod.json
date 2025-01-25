@@ -14,9 +14,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			{
-				"value": "z3roco01.quickvillagers.QuickVillagers"
-			}
+			"z3roco01.quickvillagers.QuickVillagers"
 		]
 	},
 	"mixins": [
