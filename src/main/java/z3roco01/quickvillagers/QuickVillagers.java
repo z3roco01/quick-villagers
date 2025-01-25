@@ -11,6 +11,5 @@ public class QuickVillagers implements ModInitializer {
     @Override
     public void onInitialize() {
         logger.info("init :3");
-        QuickVillagerComponents.register();
     }
 }

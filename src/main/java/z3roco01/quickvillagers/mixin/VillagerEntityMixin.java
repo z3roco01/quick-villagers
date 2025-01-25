@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import z3roco01.quickvillagers.QuickVillagerComponents;
+import z3roco01.quickvillagers.QuickVillagers;
 
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin {
@@ -32,6 +32,8 @@ public abstract class VillagerEntityMixin {
             NbtCompound entityTag = new NbtCompound();
             this.writeCustomDataToNbt(entityTag);
             entityTag.putString("id", "minecraft:villager");
+            entityTag.putBoolean("quickvillager:baby", ((VillagerEntity)(Object)this).isBaby());
+            QuickVillagers.logger.info(entityTag.toString());
 
             eggData.put("EntityTag", entityTag);
 
@@ -45,7 +47,7 @@ public abstract class VillagerEntityMixin {
                             + " " +
                             Text.translatable("entity.minecraft.villager." + profession.substring(profession.indexOf(":")+1)).getString());
             egg.set(DataComponentTypes.LORE, new LoreComponent(loreText.getWithStyle(Style.EMPTY.withColor(Formatting.GRAY).withItalic(false))));
-            egg.set(QuickVillagerComponents.SPAWN_BABY, ((VillagerEntity)(Object)this).isBaby());
+            //egg.set(QuickVillagerComponents.SPAWN_BABY, ((VillagerEntity)(Object)this).isBaby());
             player.getInventory().offerOrDrop(egg);
 
             ((VillagerEntity)(Object)this).discard();
