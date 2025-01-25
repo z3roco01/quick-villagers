@@ -3,7 +3,7 @@
 	"id": "quick_villagers",
 	"version": "${version}",
 	"name": "Quick Villagers",
-	"description": "Makes villages better",
+	"description": "Allows you to pickup villagers into a spawn egg !",
 	"authors": [
 		"z3roco01"
 	],
@@ -11,7 +11,7 @@
 	},
 	"license": "Unlicense",
 	"icon": "assets/quick_villagers/icon.png",
-	"environment": "*",
+	"environment": "server",
 	"entrypoints": {
 		"main": [
 			{
@@ -23,12 +23,19 @@
 		"quickvillagers.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.15.7",
-		"minecraft": "~1.21",
+		"fabricloader": ">=0.16.10",
+		"minecraft": ["1.21.2", "1.21.3"],
 		"java": ">=21",
 		"fabric-api": "*"
 	},
-	"suggests": {
-		"another-mod": "*"
+
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.kofi": "https://ko-fi.com/z3roco01",
+				"modmenu.twitter": "https://x.com/peenorsucker",
+				"modmenu.modrinth": "https://modrinth.com/mod/endless-music"
+			}
+		}
 	}
 }
