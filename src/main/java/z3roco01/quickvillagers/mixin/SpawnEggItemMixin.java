@@ -27,7 +27,7 @@ public abstract class SpawnEggItemMixin extends Item {
     private void spawnBaby(PlayerEntity user, MobEntity entity, EntityType<? extends MobEntity> entityType, ServerWorld world, Vec3d pos, ItemStack stack, CallbackInfoReturnable<Optional<MobEntity>> cir) {
         NbtComponent entityData = stack.get(DataComponentTypes.ENTITY_DATA);
         if(entityType == EntityType.VILLAGER && entityData != null) {
-            entity.readCustomDataFromNbt(entityData.copyNbt());
+            entityData.applyToEntity(entity);
             if(entity.age != 0) { // baby
                 entity.setBaby(true);
             }

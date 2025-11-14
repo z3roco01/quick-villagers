@@ -8,9 +8,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
+import net.minecraft.storage.NbtWriteView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ErrorReporter;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,26 +25,27 @@ import z3roco01.quickvillagers.QuickVillagers;
 
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin {
-    @Shadow public abstract void writeCustomDataToNbt(NbtCompound nbt);
+    @Shadow
+    protected abstract void writeCustomData(WriteView view);
 
     @Inject(method="interactMob", at=@At("HEAD"), cancellable = true)
     private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> ci) {
         if(player.isSneaking()) {
             NbtCompound eggData = new NbtCompound();
 
-            NbtCompound entityTag = new NbtCompound();
-            this.writeCustomDataToNbt(entityTag);
-            entityTag.putString("id", "minecraft:villager");
-            entityTag.putBoolean("quickvillager:baby", ((VillagerEntity)(Object)this).isBaby());
-            QuickVillagers.logger.info(entityTag.toString());
+            NbtWriteView view = NbtWriteView.create(ErrorReporter.EMPTY);
+            this.writeCustomData(view);
 
-            eggData.put("EntityTag", entityTag);
+            view.putString("id", "minecraft:villager");
+            view.putBoolean("quickvillager:baby", ((VillagerEntity)(Object)this).isBaby());
+
+            eggData.put("EntityTag", view.getNbt());
 
             ItemStack egg = new ItemStack(Items.VILLAGER_SPAWN_EGG, 1);
-            egg.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityTag));
+            egg.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(view.getNbt()));
 
-            String profession = entityTag.getCompound("VillagerData").get().getString("profession").get();
-            String type = entityTag.getCompound("VillagerData").get().getString("type").get();
+            String profession = view.getNbt().getCompound("VillagerData").get().getString("profession").get();
+            String type = view.getNbt().getCompound("VillagerData").get().getString("type").get();
 
             Text loreText = Text.of(Text.translatable("biome.minecraft." + type.substring(type.indexOf(":")+1)).getString()
                             + " " +
