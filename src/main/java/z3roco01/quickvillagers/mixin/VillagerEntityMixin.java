@@ -40,8 +40,8 @@ public abstract class VillagerEntityMixin {
             ItemStack egg = new ItemStack(Items.VILLAGER_SPAWN_EGG, 1);
             egg.set(DataComponentTypes.ENTITY_DATA, NbtComponent.of(entityTag));
 
-            String profession = entityTag.getCompound("VillagerData").getString("profession");
-            String type = entityTag.getCompound("VillagerData").getString("type");
+            String profession = entityTag.getCompound("VillagerData").get().getString("profession").get();
+            String type = entityTag.getCompound("VillagerData").get().getString("type").get();
 
             Text loreText = Text.of(Text.translatable("biome.minecraft." + type.substring(type.indexOf(":")+1)).getString()
                             + " " +
